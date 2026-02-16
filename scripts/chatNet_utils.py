@@ -26,7 +26,7 @@ def check_cred(usr, pwd, attempt):
     '''
     creds, service = get_drive_access()
 
-    with open(r'C:\Users\richa\Documents\Work\DriveChat\configs\cred.yml', 'r') as c:
+    with open(r'configs\cred.yml', 'r') as c:
         file = yaml.safe_load(c)
         try:
             name = hashlib.md5(usr).hexdigest()
