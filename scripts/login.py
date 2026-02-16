@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 from chatNet_utils import get_cred
 from chat_ui import open_chat
-import PySimpleGUI as sg
-
+import customtkinter as ctk
 
 # application starts here
 
 if __name__ == '__main__':
-    sg.theme('LightGrey 6')
+    ctk.set_appearance_mode("Light")
     access, user_name = get_cred()
     if access == 'Granted':
         open_chat(user_name)
