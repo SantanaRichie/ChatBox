@@ -5,7 +5,7 @@ import time
 import threading
 from chatNet_utils import get_drive_access, update_file
 
-path = '//DESKTOP-22HGDSQ/Users/richa/OneDrive/Documents/Work/ML_projects/chat.db'
+path = 'chat.db path'
 creds, service = get_drive_access()
 
 def the_thread(window):
