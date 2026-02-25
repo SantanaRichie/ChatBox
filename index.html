@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ChatBox - A lightweight peer-to-peer desktop chat application. Chat directly with friends without relying on third-party messaging services.">
+    <meta name="keywords" content="chat, messaging, peer-to-peer, desktop app, P2P, privacy">
+    <meta property="og:title" content="ChatBox - Peer-to-Peer Desktop Chat">
+    <meta property="og:description" content="Direct messaging over TCP with complete data ownership">
+    <meta property="og:type" content="website">
+    <title>ChatBox - Peer-to-Peer Desktop Chat Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-600);
+            background-color: #fff;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--dark);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .btn-download-nav {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-download-nav:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, #1e3a8a 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .btn-primary:hover {
+            background: #00d4e0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .hero-image {
+            margin-top: 3rem;
+            opacity: 0.9;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 2rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .step h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Download Section */
+        .download {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .download h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .download-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .download-card p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .download-card .btn {
+            width: 100%;
+        }
+
+        /* Specs Section */
+        .specs {
+            padding: 5rem 2rem;
+            background: var(--light);
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .spec-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .spec-label {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .spec-value {
+            color: var(--dark);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        /* Security Section */
+        .security {
+            padding: 5rem 2rem;
+        }
+
+        .security-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .security-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .security-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 6px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .security-item-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .security-item h4 {
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 5rem 2rem;
+            background: var(--light);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            background: white;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: var(--light);
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 1.5rem;
+            max-height: 500px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: var(--light);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section a {
+            display: block;
+            color: var(--light);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">💬</div>
+                ChatBox
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how">How It Works</a></li>
+                <li><a href="#download">Download</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="https://github.com/SantanaRichie/ChatBox" target="_blank">GitHub</a></li>
+                <li><a href="#download" class="btn-download-nav">Download Now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Chat Directly. Own Your Data.</h1>
+            <p class="subtitle">
+                ChatBox is a lightweight peer-to-peer desktop chat application. 
+                Connect with friends over the internet without relying on third-party messaging services.
+            </p>
+            <div class="hero-buttons">
+                <a href="#download" class="btn btn-primary">Download Now</a>
+                <a href="https://github.com/SantanaRichie/ChatBox" target="_blank" class="btn btn-secondary">View on GitHub</a>
+            </div>
+            <div class="hero-image">
+                <div style="font-size: 4rem; opacity: 0.3;">💻 🔗 💻</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose ChatBox?</h2>
+            <p class="section-subtitle">Everything you need for private, direct messaging</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Peer-to-Peer</h3>
+                    <p>Direct TCP connections between users. No intermediary servers, no data collection.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Local Storage</h3>
+                    <p>All messages stored securely on your computer. Complete ownership of your data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <h3>Dark & Light Mode</h3>
+                    <p>Toggle between appearance modes. Comfortable viewing in any lighting condition.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Secure</h3>
+                    <p>Local credential hashing. Direct connections. No cloud dependency.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Modern UI</h3>
+                    <p>Built with CustomTkinter. Professional desktop experience across platforms.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast & Lightweight</h3>
+                    <p>Minimal dependencies. Quick startup. Low system resource usage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Getting Started in 3 Steps</h2>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Download & Install</h3>
+                    <p>Download the executable or install from source. Works on Windows, macOS, and Linux.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Create a Connection</h3>
+                    <p>Add a peer by entering their IP address and port. Save the connection for future use.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Start Chatting</h3>
+                    <p>Send messages that sync with your peer in real-time. Full chat history saved locally.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specs Section -->
+    <section class="specs">
+        <div class="container">
+            <h2 class="section-title">Technical Specs</h2>
+            
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <div class="spec-label">Language</div>
+                    <div class="spec-value">Python 3.9+</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">GUI Framework</div>
+                    <div class="spec-value">CustomTkinter 5.2.1</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Database</div>
+                    <div class="spec-value">SQLite</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Networking</div>
+                    <div class="spec-value">TCP Sockets</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Authentication</div>
+                    <div class="spec-value">MD5 Hashing</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">License</div>
+                    <div class="spec-value">Open Source</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="security">
+        <div class="security-content">
+            <h2 class="section-title">Your Privacy Matters</h2>
+            
+            <div class="security-list">
+                <div class="security-item">
+                    <div class="security-item-icon">✓</div>
+                    <div>
+                        <h4>Local Storage Only</h4>
+                        <p>All chat data stored on your computer. No cloud servers tracking your messages.</p>
+                    </div>
+                </div>
+                <div class="security-item">
+                    <div class="security-item-icon">✓</div>
+                    <div>
+                        <h4>Credential Hashing</h4>
+                        <p>Passwords hashed with MD5 before storing. Never stored in plain text.</p>
+                    </div>
+                </div>
+                <div class="security-item">
+                    <div class="security-item-icon">✓</div>
+                    <div>
+                        <h4>Direct Connections</h4>
+                        <p>Peer-to-peer communication. No intermediary services or data collection.</p>
+                    </div>
+                </div>
+                <div class="security-item">
+                    <div class="security-item-icon">✓</div>
+                    <div>
+                        <h4>Full Control</h4>
+                        <p>You control when data is accessed and shared. Export or delete anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <h2>Ready to Chat?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 0;">Choose your download option</p>
+            
+            <div class="download-options">
+                <div class="download-card">
+                    <h3>📦 Pre-Built Executable</h3>
+                    <p>Download the ready-to-use Windows executable. No Python installation required.</p>
+                    <a href="https://github.com/SantanaRichie/ChatBox/releases" target="_blank" class="btn btn-primary">Download .exe</a>
+                </div>
+                <div class="download-card">
+                    <h3>🐍 Install from Source</h3>
+                    <p>Clone the repository and install dependencies with pip. Python 3.9+ required.</p>
+                    <a href="https://github.com/SantanaRichie/ChatBox#option-2-install-from-source-python-39" target="_blank" class="btn btn-primary">View Instructions</a>
+                </div>
+                <div class="download-card">
+                    <h3>🔨 Build Your Own</h3>
+                    <p>Compile your own executable from source using our build automation script.</p>
+                    <a href="https://github.com/SantanaRichie/ChatBox#option-3-build-your-own-executable" target="_blank" class="btn btn-primary">Build Guide</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="faq-container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <button class="faq-question">Do I need Python installed to run ChatBox?</button>
+                <div class="faq-answer">
+                    <p>Not if you download the pre-built .exe executable. It includes everything you need. If you want to install from source or build your own, Python 3.9 or higher is required.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">How does peer-to-peer messaging work?</button>
+                <div class="faq-answer">
+                    <p>ChatBox uses TCP sockets to establish direct connections between users. You need to know the peer's IP address and listening port. Both users must be running ChatBox and connected for messaging to work.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">Is my data encrypted?</button>
+                <div class="faq-answer">
+                    <p>Chat data is stored locally on your computer in SQLite databases. Passwords are hashed with MD5. Currently, messages are transmitted in plain JSON. End-to-end encryption is on the roadmap.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">What if I want to use it on macOS or Linux?</button>
+                <div class="faq-answer">
+                    <p>ChatBox is cross-platform! You can install from source on any operating system that supports Python 3.9+. Follow the "Install from Source" option in the README.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">How do I find my IP address?</button>
+                <div class="faq-answer">
+                    <p><strong>Windows:</strong> Open Command Prompt and type <code>ipconfig</code>. Look for "IPv4 Address".</p>
+                    <p><strong>macOS/Linux:</strong> Open Terminal and type <code>ifconfig</code>. Look for "inet" address.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">Can I use ChatBox for group chats?</button>
+                <div class="faq-answer">
+                    <p>Currently, ChatBox supports one-to-one peer connections. Group chat support is on the roadmap for future versions.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">How do I report bugs or request features?</button>
+                <div class="faq-answer">
+                    <p>Visit the <a href="https://github.com/SantanaRichie/ChatBox/issues" target="_blank">GitHub Issues</a> page to report bugs or request features. Contributions are welcome!</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">Is ChatBox free?</button>
+                <div class="faq-answer">
+                    <p>Yes! ChatBox is completely free and open-source. The code is available on GitHub for anyone to use, modify, or contribute to.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Product</h4>
+                <a href="#features">Features</a>
+                <a href="#download">Download</a>
+                <a href="#faq">FAQ</a>
+                <a href="https://github.com/SantanaRichie/ChatBox/blob/main/README.md" target="_blank">Documentation</a>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <a href="https://github.com/SantanaRichie/ChatBox/blob/main/INSTALL.md" target="_blank">Installation Guide</a>
+                <a href="https://github.com/SantanaRichie/ChatBox/blob/main/DISTRIBUTION.md" target="_blank">Distribution Guide</a>
+                <a href="https://github.com/SantanaRichie/ChatBox/releases" target="_blank">Releases</a>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <a href="https://github.com/SantanaRichie/ChatBox" target="_blank">GitHub Repository</a>
+                <a href="https://github.com/SantanaRichie/ChatBox/issues" target="_blank">Report Issues</a>
+                <a href="https://github.com/SantanaRichie/ChatBox/pulls" target="_blank">Contribute</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="https://github.com/SantanaRichie/ChatBox/blob/main/LICENSE" target="_blank">License</a>
+                <a href="#faq">Privacy Policy</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 ChatBox. All rights reserved. Made with ❤️ for privacy-focused communication.</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+                ChatBox is open-source software. View the source code on <a href="https://github.com/SantanaRichie/ChatBox" target="_blank" style="color: var(--accent);">GitHub</a>.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // FAQ accordion functionality
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                // Close other items
+                document.querySelectorAll('.faq-item').forEach(other => {
+                    if (other !== item) {
+                        other.classList.remove('active');
+                    }
+                });
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+
+            // Expand first item by default
+            if (item === document.querySelector('.faq-item')) {
+                item.classList.add('active');
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .step, .spec-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
