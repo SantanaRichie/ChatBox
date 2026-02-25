@@ -40,15 +40,19 @@ def build_app():
         '--onefile',
         '--windowed',
         '--name=ChatBox',
-        '--icon=chatbox.ico',
         '--add-data', 'configs:configs',
         '--hidden-import=customtkinter',
         '--hidden-import=yaml',
         'scripts/login.py'
     ]
     
+    # Add icon if it exists
+    if os.path.exists('chatbox.ico'):
+        cmd.insert(4, '--icon=chatbox.ico')
+    
     try:
-        subprocess.run(cmd, check=True)
+        # Use python -m PyInstaller instead of direct command for better compatibility
+        subprocess.run([sys.executable, '-m', 'PyInstaller'] + cmd[1:], check=True)
         print("✓ Executable built")
     except subprocess.CalledProcessError as e:
         print(f"✗ Build failed: {e}")

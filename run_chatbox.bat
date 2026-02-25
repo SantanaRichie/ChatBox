@@ -26,11 +26,17 @@ REM Check if dependencies are installed
 python -c "import customtkinter" >nul 2>&1
 if errorlevel 1 (
     echo Installing required packages...
-    pip install -r requirements.txt
+    python -m pip install -r requirements.txt
     if errorlevel 1 (
         echo ERROR: Failed to install dependencies
-        pause
-        exit /b 1
+        echo.
+        echo Trying alternative installation method...
+        python -m pip install --user -r requirements.txt
+        if errorlevel 1 (
+            echo ERROR: Failed to install dependencies
+            pause
+            exit /b 1
+        )
     )
     echo.
     echo Dependencies installed successfully!

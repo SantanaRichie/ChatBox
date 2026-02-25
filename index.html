@@ -318,6 +318,88 @@
             width: 100%;
         }
 
+        /* Installation Section */
+        .installation {
+            padding: 5rem 2rem;
+        }
+
+        .installation-guide {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .install-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .install-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .install-card h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .install-card ol {
+            list-style-position: inside;
+            margin: 1rem 0;
+            line-height: 1.8;
+        }
+
+        .install-card li {
+            margin-bottom: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .install-card code {
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary);
+        }
+
+        .install-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        .install-note strong {
+            color: #333;
+        }
+
+        .code-block {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        .code-block code {
+            background: none;
+            padding: 0;
+            color: var(--dark);
+            font-family: 'Courier New', monospace;
+        }
+
         /* Specs Section */
         .specs {
             padding: 5rem 2rem;
@@ -534,6 +616,7 @@
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#how">How It Works</a></li>
+                <li><a href="#installation">Install</a></li>
                 <li><a href="#download">Download</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="https://github.com/SantanaRichie/ChatBox" target="_blank">GitHub</a></li>
@@ -621,6 +704,89 @@
                     <div class="step-number">3</div>
                     <h3>Start Chatting</h3>
                     <p>Send messages that sync with your peer in real-time. Full chat history saved locally.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+        <div class="installation-guide">
+            <h2 class="section-title">Installation Guide</h2>
+            <p class="section-subtitle">Choose the method that works best for you</p>
+            
+            <div class="install-options">
+                <!-- Option 1: Pre-Built Executable -->
+                <div class="install-card">
+                    <h3>📦 Download Executable (Easiest)</h3>
+                    <p><strong>For Windows users with no Python experience</strong></p>
+                    <ol>
+                        <li>Go to <a href="https://github.com/SantanaRichie/ChatBox/releases" target="_blank">GitHub Releases</a></li>
+                        <li>Download <code>ChatBox.zip</code></li>
+                        <li>Extract the ZIP file</li>
+                        <li>Double-click <code>ChatBox.exe</code> to run</li>
+                        <li>Login with default credentials:
+                            <div class="code-block"><code>Username: test<br>Password: pwd</code></div>
+                        </li>
+                    </ol>
+                    <div class="install-note">
+                        <strong>✓</strong> No Python installation required - everything is bundled!
+                    </div>
+                </div>
+
+                <!-- Option 2: Install from Source -->
+                <div class="install-card">
+                    <h3>🐍 Install from Source</h3>
+                    <p><strong>For Python developers</strong></p>
+                    <ol>
+                        <li>Install Python 3.9+ from <a href="https://www.python.org" target="_blank">python.org</a></li>
+                        <li>Clone the repository:
+                            <div class="code-block"><code>git clone https://github.com/SantanaRichie/ChatBox.git<br>cd ChatBox</code></div>
+                        </li>
+                        <li>Install dependencies:
+                            <div class="code-block"><code>pip install -r requirements.txt</code></div>
+                        </li>
+                        <li>Run ChatBox:
+                            <div class="code-block"><code>python scripts/login.py</code></div>
+                        </li>
+                    </ol>
+                    <div class="install-note">
+                        <strong>✓</strong> Works on Windows, macOS, and Linux
+                    </div>
+                </div>
+
+                <!-- Option 3: Build Your Own Executable -->
+                <div class="install-card">
+                    <h3>🔨 Build Your Own Executable</h3>
+                    <p><strong>For advanced users</strong></p>
+                    <ol>
+                        <li>Follow steps 1-3 of "Install from Source" above</li>
+                        <li>Build the executable:
+                            <div class="code-block"><code>python build_app.py</code></div>
+                        </li>
+                        <li>Find your executable:
+                            <div class="code-block"><code>dist/ChatBox/ChatBox.exe</code></div>
+                        </li>
+                        <li>Test it by double-clicking <code>ChatBox.exe</code></li>
+                        <li>Share the <code>dist/ChatBox/</code> folder with others</li>
+                    </ol>
+                    <div class="install-note">
+                        <strong>✓</strong> Customize and build your own version
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 3rem; text-align: center; color: var(--dark); font-size: 1.3rem;">Quick Start: Get Your Peer's Information</h3>
+            <div style="max-width: 600px; margin: 2rem auto; background: var(--light); padding: 2rem; border-radius: 8px;">
+                <p style="margin-bottom: 1rem; color: var(--gray-600);">Before chatting, exchange this information with your friend:</p>
+                <div class="code-block" style="text-align: left;">
+                    <strong>On Windows (Command Prompt):</strong><br>
+                    <code>ipconfig</code><br><br>
+                    <strong>On macOS/Linux (Terminal):</strong><br>
+                    <code>ifconfig</code><br><br>
+                    <strong>Look for:</strong><br>
+                    "IPv4 Address" (usually <code>192.168.x.x</code> or <code>10.x.x.x</code>)<br><br>
+                    <strong>Default Port:</strong> <code>5000</code>
                 </div>
             </div>
         </div>
