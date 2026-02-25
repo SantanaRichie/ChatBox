@@ -1,4 +1,4 @@
-# ChatBox
+## [ChatBox](https://santanarichie.github.io/ChatBox/)
 
 A lightweight peer-to-peer desktop chat application built with Python and CustomTkinter. Chat directly with friends over the internet without relying on third-party messaging services.
 
