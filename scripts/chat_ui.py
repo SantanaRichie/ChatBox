@@ -7,8 +7,8 @@ import time
 import threading
 from manage_connections import ConnectionManager
 
-path = r'C:\Users\santa\Documents\Projects\ChatBox\configs\chat.db'
-connections_path = r'C:\Users\santa\Documents\Projects\ChatBox\configs\connections.db'
+path = r'configs\chat.db'
+connections_path = r'configs\connections.db'
 
 def refresh_chat(path, peer_filter=None):
     """Fetch chat log. Returns (full_log, message_count, messages)
