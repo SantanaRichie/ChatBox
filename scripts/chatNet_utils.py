@@ -2,6 +2,11 @@
 import hashlib
 import yaml
 import customtkinter as ctk
+import socket
+import subprocess
+import platform
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 def check_cred(usr, pwd, attempt):
@@ -59,3 +64,66 @@ def get_cred(attempt=0, msg=None):
         msg = result['access'] if result['access'] else 'Invalid credentials'
     
     return None, None
+
+
+def get_local_ip():
+    """Get the local IP address of this machine"""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+        return local_ip
+    except Exception:
+        return "127.0.0.1"
+
+
+def scan_for_chatbox_hosts(port=5000, timeout=1):
+    """Scan network for ChatBox hosts and return list of IPs"""
+    local_ip = get_local_ip()
+    parts = local_ip.split('.')
+    if len(parts) != 4:
+        return []
+    
+    network_base = f"{parts[0]}.{parts[1]}.{parts[2]}"
+    network_range = [f"{network_base}.{i}" for i in range(1, 255)]
+    
+    def check_ip(ip):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(timeout)
+            result = sock.connect_ex((ip, port))
+            sock.close()
+            return ip if result == 0 else None
+        except Exception:
+            return None
+    
+    chatbox_hosts = []
+    
+    with ThreadPoolExecutor(max_workers=50) as executor:
+        futures = {executor.submit(check_ip, ip): ip for ip in network_range}
+        
+        for future in as_completed(futures):
+            result = future.result()
+            if result:
+                chatbox_hosts.append(result)
+    
+    return chatbox_hosts
+
+
+def show_network_info():
+    """Display current machine's network information"""
+    local_ip = get_local_ip()
+    hostname = socket.gethostname()
+    
+    print("Network Information")
+    print("=" * 30)
+    print(f"Hostname: {hostname}")
+    print(f"Local IP: {local_ip}")
+    print(f"ChatBox Port: 5000")
+    print()
+    print("Tell other users to connect to:")
+    print(f"  IP: {local_ip}")
+    print(f"  Port: 5000")
+    
+    return local_ip

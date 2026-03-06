@@ -9,7 +9,7 @@ CONNECTIONS_DB = "configs/connections.db"
 CHAT_DB = "configs/chat.db"
 
 class ConnectionManager:
-    def __init__(self, username, host='localhost', port=5000):
+    def __init__(self, username, host='0.0.0.0', port=5000):
         self.username = username
         self.host = host
         self.port = port

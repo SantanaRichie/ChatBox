@@ -37,7 +37,7 @@ def append_new_messages(chat_display, res, last_count):
         chat_display.configure(state="disabled")
         chat_display.see('end')
 
-def open_chatbox(user_name, host='localhost', port=5000):
+def open_chatbox(user_name, host='0.0.0.0', port=5000):
     status = 'Online'
     
     # Track appearance mode
